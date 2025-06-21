@@ -1,4 +1,0 @@
-repository "cashier-chaos/cashier-chaos@7971889900476@cloud"
-  path "/"
-    br "/main"
-    co "/main"
