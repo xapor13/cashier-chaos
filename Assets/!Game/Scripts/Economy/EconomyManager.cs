@@ -5,7 +5,7 @@ public class EconomyManager : MonoBehaviour
 {
     [SerializeField] private EconomySettings settings;
     [SerializeField] private GameTimeManager timeManager;
-    //[SerializeField] private CashRegister[] cashRegisters; // Assigned in Inspector
+    [SerializeField] private CashRegister[] cashRegisters; // Assigned in Inspector
 
     public UnityEvent onBalanceChanged = new UnityEvent();
     public UnityEvent onBankruptcy = new UnityEvent();
@@ -48,7 +48,7 @@ public class EconomyManager : MonoBehaviour
     {
         // Apply daily expenses
         float dailyExpenses = settings.rentCost + settings.electricityCost + settings.collectionCost;
-        //dailyExpenses += settings.cashRegisterMaintenanceCost * cashRegisters.Length;
+        dailyExpenses += settings.cashRegisterMaintenanceCost * cashRegisters.Length;
         if (hasMechanic) dailyExpenses += settings.mechanicCost;
         if (hasAssistant) dailyExpenses += settings.assistantCost;
         if (hasGuard) dailyExpenses += settings.guardCost;
@@ -93,16 +93,16 @@ public class EconomyManager : MonoBehaviour
         float totalIncome = 0f;
         bool hasQueues = false; // Placeholder: Check queues later
 
-        // foreach (var register in cashRegisters)
-        // {
-        //     if (register.IsOperational)
-        //     {
-        //         totalIncome += register.IncomeRate;
-        //     }
-        //     // Placeholder: Check if register has queue
-        // }
+        foreach (var register in cashRegisters)
+        {
+            if (register.IsOperational)
+            {
+                totalIncome += register.IncomeRate;
+            }
+            // Placeholder: Check if register has queue
+        }
 
-        // Apply efficiency bonus if no queues
+        //Apply efficiency bonus if no queues
         if (!hasQueues)
         {
             totalIncome *= (1f + settings.efficiencyBonusPercent);

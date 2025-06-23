@@ -9,12 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c644c1b9c6a6044f93bd36660a4bc1d, type: 3}
-  m_Name: TimeSettings
+  m_Script: {fileID: 1137305049, guid: a4865f1ab4504ed8a368670db22f409c, type: 3}
+  m_Name: InspectorConfig
   m_EditorClassIdentifier: 
-  realSecondsPerGameHour: 75
-  startHour: 8
-  endHour: 23
-  firstPeakHours: {x: 12, y: 14}
-  secondPeakHours: {x: 18, y: 20}
-  alcoholRestrictionHour: 22
+  enableOdinInInspector: 1
+  defaultEditorBehaviour: 11
+  processMouseMoveInInspector: 1
+  drawingConfig:
+    configs: []

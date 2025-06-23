@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class EconomyUIDisplay : MonoBehaviour
 {
     [SerializeField] private EconomyManager economyManager;
+    [SerializeField] private CustomerManager customerManager;
+    [SerializeField] private CashRegisterManager cashRegisterManager;
     [SerializeField] private TMP_Text incomeText;
     [SerializeField] private TMP_Text expensesText;
     [SerializeField] private TMP_Text cashRegistersText;
@@ -48,13 +50,16 @@ public class EconomyUIDisplay : MonoBehaviour
 
     private void UpdateUI()
     {
-        // Placeholder: Calculate daily income/expenses (will integrate with CashRegister later)
         if (incomeText) incomeText.text = $"Доход: {dailyIncome:F0} TR/день";
         if (expensesText) expensesText.text = $"Расходы: {dailyExpenses:F0} TR/день";
         if (cashRegistersText)
         {
             cashRegistersText.text = "Кассы:\n";
-            // Placeholder: List cash registers (to be expanded)
+            foreach (var register in cashRegisterManager.GetComponentsInChildren<CashRegister>())
+            {
+                Customer customer = register.CurrentCustomer;
+                cashRegistersText.text += $"Касса ({register.CurrentState}): {(customer ? customer.CustomerType : "Свободна")}\n";
+            }
         }
         UpdateButtonStates();
     }
@@ -94,12 +99,24 @@ public class EconomyUIDisplay : MonoBehaviour
         ShowNotification(hire ? $"Нанят {staffType}!" : $"Уволен {staffType}!");
     }
 
-    private void ShowNotification(string message)
+    public void ShowNotification(string message)
     {
         if (notificationText)
         {
             notificationText.text = message;
             // Placeholder: Add fade-out animation later
         }
+    }
+
+    public void HelpCustomer(Customer customer)
+    {
+        customer.ProvideHelp();
+        ShowNotification($"Помощь оказана клиенту ({customer.CustomerType})!");
+    }
+
+    public void KickCustomer(Customer customer)
+    {
+        customer.KickCustomer(economyManager);
+        ShowNotification($"Клиент ({customer.CustomerType}) изгнан!");
     }
 }
