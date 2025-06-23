@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a618cb28a68ca634fb6f255d843ee72f, type: 3}
+  m_Name: EconomySettings
+  m_EditorClassIdentifier: 
+  initialBalance: 50000
+  targetBalance: 500000
+  criticalDebtDaysLimit: 3
+  basicCashRegisterRate: 15
+  improvedCashRegisterRate: 25
+  premiumCashRegisterRate: 40
+  efficiencyBonusPercent: 0.2
+  weekendBonusPercent: 0.5
+  rentCost: 5000
+  electricityCost: 1000
+  collectionCost: 500
+  cashRegisterMaintenanceCost: 200
+  underageAlcoholFine: 10000
+  lateAlcoholFine: 5000
+  brokenCashRegisterFine: 1000
+  massCustomerLossFine: 2000
+  kickFines:
+  - 2000
+  - 1500
+  - 800
+  - 500
+  - 5000
+  kickFineProbabilities:
+  - 0.7
+  - 0.5
+  - 0.2
+  - 0.1
+  - 0.8
+  basicCashRegisterCost: 8000
+  improvedCashRegisterCost: 15000
+  premiumCashRegisterCost: 25000
+  mechanicCost: 3000
+  assistantCost: 2000
+  guardCost: 2500
