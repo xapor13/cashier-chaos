@@ -4,15 +4,10 @@ using UnityEngine;
 
 public class QueueManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public Dictionary<CashRegister, Queue<Customer>> registerQueues;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public void AddToQueue(CashRegister register, Customer customer)
+    public Customer GetNextInQueue(CashRegister register)
+    public int GetQueueLength(CashRegister register)
+    public CashRegister GetShortestQueue()
 }

@@ -2,17 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Staff : MonoBehaviour
+public abstract class Staff : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public string staffName;
+    public float dailyCost;
+    public bool isHired = false;
+    public float efficiency = 1f;
 
-    // Update is called once per frame
-    void Update()
+    public abstract void PerformDuties();
+    public virtual void HireStaff()
     {
-        
+
+    }
+    public virtual void FireStaff()
+    {
+
     }
 }
+

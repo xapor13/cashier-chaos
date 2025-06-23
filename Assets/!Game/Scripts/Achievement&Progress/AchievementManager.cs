@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class AchievementManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public static AchievementManager Instance;
+    public List<Achievement> achievements;
 
-    // Update is called once per frame
-    void Update()
+    void Start() { InitializeAchievements(); }
+
+    public void UpdateProgress(string achievementId, int value)
+    {
+
+    }
+    public void UnlockAchievement(string achievementId)
+    {
+
+    }
+    void InitializeAchievements()
     {
         
     }
 }
+

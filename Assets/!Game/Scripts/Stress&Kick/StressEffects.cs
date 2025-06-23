@@ -4,15 +4,26 @@ using UnityEngine;
 
 public class StressEffects : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public Camera playerCamera;
+    public float shakeIntensity = 0f;
 
-    // Update is called once per frame
     void Update()
     {
-        
+        ApplyCameraShake();
+        ApplyErrorChance();
+    }
+
+    void ApplyCameraShake()
+    {
+
+    }
+    void ApplyErrorChance() // 20% ошибок при высоком стрессе
+    {
+    }
+
+    void TriggerRandomActions() // При панике
+    {
+
     }
 }
+

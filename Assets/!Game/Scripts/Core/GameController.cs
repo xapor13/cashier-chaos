@@ -1,17 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
     {
-        
+        InitializeAllSystems();
+        StartGameSession();
     }
 
-    // Update is called once per frame
-    void Update()
+    void InitializeAllSystems()
+    {
+        // Инициализация всех менеджеров в правильном порядке
+    }
+
+    void StartGameSession()
+    {
+
+    }
+    void EndGameSession()
+    {
+
+    }
+    void CheckWinConditions()
+    {
+
+    }
+    void CheckLoseConditions()
     {
         
     }

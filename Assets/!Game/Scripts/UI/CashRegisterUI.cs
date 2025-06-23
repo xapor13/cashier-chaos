@@ -1,17 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CashRegisterUI : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public CashRegister linkedRegister;
+    public Image statusIndicator;
+    public Button helpButton;
+    public Button repairButton;
+    public Button rebootButton;
+    public Button kickButton;
 
-    // Update is called once per frame
-    void Update()
+    void Update() { UpdateRegisterUI(); }
+
+    void UpdateRegisterUI()
+    {
+
+    }
+    public void OnHelpClick()
+    {
+
+    }
+    public void OnRepairClick()
+    {
+
+    }
+    public void OnRebootClick()
+    {
+
+    }
+    public void OnKickClick()
     {
         
     }

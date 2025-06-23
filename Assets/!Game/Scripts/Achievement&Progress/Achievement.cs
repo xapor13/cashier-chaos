@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Achievement : MonoBehaviour
+[System.Serializable]
+public class Achievement
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public string id;
+    public string title;
+    public string description;
+    public bool isUnlocked = false;
+    public int targetValue;
+    public int currentProgress;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public bool CheckProgress(int newValue)
+    public void Unlock()
 }
+

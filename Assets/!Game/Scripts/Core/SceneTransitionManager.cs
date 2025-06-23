@@ -1,17 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SceneTransitionManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public static SceneTransitionManager Instance;
+
+    public void LoadMainMenu()
     {
-        
+
+    }
+    public void LoadGameScene()
+    {
+
+    }
+    public void RestartLevel()
+    {
+
+    }
+    public void QuitGame()
+    {
+
     }
 
-    // Update is called once per frame
-    void Update()
+    IEnumerator LoadSceneAsync(string sceneName)
     {
         
     }

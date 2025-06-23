@@ -1,18 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using GameCore;
 
-public class AggressiveCustomer : MonoBehaviour
+public class AggressiveCustomer : Customer
 {
-    // Start is called before the first frame update
+    public enum AggressionLevel { Calm, Grumbling, Yelling, Scandal }
+    public AggressionLevel currentAggression = AggressionLevel.Calm;
+
     void Start()
     {
-        
+        customerType = CustomerType.Aggressive;
+        serviceSpeed = 8f;
+        patience = 45f; // 30-60 сек
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void ReactToWaiting()
     {
-        
+        // Эскалация агрессии
+        if (currentPatience < patience * 0.7f) currentAggression = AggressionLevel.Grumbling;
+        if (currentPatience < patience * 0.4f) currentAggression = AggressionLevel.Yelling;
+        if (currentPatience < patience * 0.1f) currentAggression = AggressionLevel.Scandal;
+    }
+
+    public override float GetKickFineRisk()
+    {
+        return 0.1f; // 10% риск штрафа 500₽
     }
 }
