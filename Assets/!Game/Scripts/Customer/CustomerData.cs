@@ -1,22 +1,34 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "CustomerData", menuName = "Game/CustomerData", order=3)]
+// Создает пункт меню для создания ассета CustomerData в UnityEngine
+[CreateAssetMenu(fileName = "CustomerData", menuName = "Game/CustomerData", order = 3)]
 public class CustomerData : ScriptableObject
 {
+    // Структура для хранения данных о типах клиента
     [System.Serializable]
     public struct CustomerTypeData
     {
-        public string name; // Elderly, Teen, Normal, Aggressive, VIP
-        public float scanTimePerItem; // Seconds per item
-        public float patienceTime; // Seconds
-        public float kickFine; // TR
-        public float kickFineProbability; // 0-1
-        public bool requiresHelpFrequently; // For Elderly
-        public bool triesRestrictedItems; // For Teen
-        public bool requiresSpecialService; // For VIP
-        public float moveSpeed; // NavMeshAgent speed
-        public GameObject prefab; // Prefab for this customer type
+        [Header("Основные характеристики")]
+        public string name; // Имя типа клиента (Пожилой, Подросток, Обычный, Агрессивный, VIP)
+        public float scanTimePerItem; // Время сканирования одного предмета (в секундах)
+        public float patienceTime; // Время терпения клиента (в секундах)
+
+        [Header("Штрафы и вероятности")]
+        public float kickFine; // Штраф за изгнание клиента (в валюте TR)
+        public float kickFineProbability; // Вероятность штрафа за изгнание (от 0 до 1)
+
+        [Header("Особенности поведения")]
+        public bool requiresHelpFrequently; // Требуется ли частая помощь (для Пожилых)
+        public bool triesRestrictedItems; // Пытается ли взять запрещенные предметы (для Подростков)
+        public bool requiresSpecialService; // Требуется ли особое обслуживание (для VIP)
+
+        [Header("Параметры перемещения")]
+        public float moveSpeed; // Скорость перемещения (для NavMeshAgent)
+        [Header("Визуальный вид")]
+        public GameObject prefab; // Префаб для данного типа клиента
     }
 
+    // Массив данных о всех типах клиентов
+    [Header("Список типов клиентов")]
     public CustomerTypeData[] customerTypes;
 }

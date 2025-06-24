@@ -13,13 +13,45 @@ MonoBehaviour:
   m_Name: CustomerData
   m_EditorClassIdentifier: 
   customerTypes:
-  - name: 
-    scanTimePerItem: 0
-    patienceTime: 0
-    kickFine: 0
-    kickFineProbability: 0
+  - name: VIP
+    scanTimePerItem: 10
+    patienceTime: 60
+    kickFine: 5000
+    kickFineProbability: 0.8
+    requiresHelpFrequently: 0
+    triesRestrictedItems: 0
+    requiresSpecialService: 1
+    moveSpeed: 5
+    prefab: {fileID: 7510028101898534597, guid: f7bd266f46789634bb4a6083aadf821a,
+      type: 3}
+  - name: Pensioner
+    scanTimePerItem: 25
+    patienceTime: 200
+    kickFine: 2000
+    kickFineProbability: 0.7
+    requiresHelpFrequently: 1
+    triesRestrictedItems: 0
+    requiresSpecialService: 0
+    moveSpeed: 3
+    prefab: {fileID: 2032369823179339213, guid: 8489ded15a4722c478817e5ee714dd23,
+      type: 3}
+  - name: Regular
+    scanTimePerItem: 10
+    patienceTime: 150
+    kickFine: 800
+    kickFineProbability: 0.2
     requiresHelpFrequently: 0
     triesRestrictedItems: 0
     requiresSpecialService: 0
-    moveSpeed: 0
-    prefab: {fileID: 0}
+    moveSpeed: 5
+    prefab: {fileID: 791378389582801006, guid: 786077e70537b0d47a0be6a55bc6f9d2, type: 3}
+  - name: Teen
+    scanTimePerItem: 12
+    patienceTime: 100
+    kickFine: 1500
+    kickFineProbability: 0.5
+    requiresHelpFrequently: 0
+    triesRestrictedItems: 1
+    requiresSpecialService: 0
+    moveSpeed: 7
+    prefab: {fileID: 542693081547714189, guid: d7e37566d6aeca64da26d9ceee0915c4, type: 3}

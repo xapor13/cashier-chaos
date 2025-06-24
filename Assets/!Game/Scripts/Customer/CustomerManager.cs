@@ -1,30 +1,34 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class CustomerManager : MonoBehaviour
 {
-    [SerializeField] private GameTimeManager timeManager;
-    [SerializeField] private EconomyManager economyManager;
-    [SerializeField] private CashRegisterManager cashRegisterManager;
-    [SerializeField] private CustomerData customerData;
-    [SerializeField] private Transform customerParent; // Parent for customer GameObjects
-    [SerializeField] private Transform entranceTransform; // Spawn point
-    [SerializeField] private Transform exitTransform; // Exit point
+    [SerializeField] private GameTimeManager timeManager; // Менеджер игрового времени
+    [SerializeField] private EconomyManager economyManager; // Менеджер экономики
+    [SerializeField] private CashRegisterManager cashRegisterManager; // Менеджер касс
+    [SerializeField] private CustomerData customerData; // Данные о клиентах
+    [SerializeField] private Transform customerParent; // Родительский объект для клиентов
+    [SerializeField] private Transform entranceTransform; // Точка спавна клиентов
+    [SerializeField] private Transform exitTransform; // Точка выхода клиентов
 
-    private float spawnTimer;
-    private float baseSpawnInterval = 30f; // Seconds between spawns
+    private float spawnTimer; // Таймер для спавна клиентов
+    private float baseSpawnInterval = 30f; // Базовый интервал спавна (сек)
 
+    // Подписка на события пиковых часов
     private void OnEnable()
     {
-        timeManager.onPeakHoursStarted.AddListener(() => baseSpawnInterval *= 0.5f); // Double spawn rate
-        timeManager.onPeakHoursEnded.AddListener(() => baseSpawnInterval *= 2f);
+        timeManager.onPeakHoursStarted.AddListener(() => baseSpawnInterval *= 0.5f); // Удвоение частоты
+        timeManager.onPeakHoursEnded.AddListener(() => baseSpawnInterval *= 2f); // Возврат к норме
     }
 
+    // Отписка от событий
     private void OnDisable()
     {
         timeManager.onPeakHoursStarted.RemoveListener(() => baseSpawnInterval *= 0.5f);
         timeManager.onPeakHoursEnded.RemoveListener(() => baseSpawnInterval *= 2f);
     }
 
+    // Обновление таймера спавна
     private void Update()
     {
         spawnTimer -= Time.deltaTime;
@@ -35,37 +39,58 @@ public class CustomerManager : MonoBehaviour
         }
     }
 
+    // Спавн нового клиента
     private void SpawnCustomer()
     {
-        // Find available cash register
+        // Поиск свободной кассы
         CashRegister availableRegister = cashRegisterManager.GetAvailableRegister();
         if (availableRegister == null) return;
 
-        // Determine customer type based on day
+        // Определение типа клиента в зависимости от дня
         int typeIndex = Random.Range(0, customerData.customerTypes.Length);
         if (timeManager.IsPensionerDiscountDay())
-            typeIndex = Random.value < 0.7f ? 0 : Random.Range(0, customerData.customerTypes.Length); // More Elderly
+            typeIndex = Random.value < 0.7f ? 0 : Random.Range(0, customerData.customerTypes.Length); // Больше пожилых
         else if (timeManager.IsYouthDay())
-            typeIndex = Random.value < 0.7f ? 1 : Random.Range(0, customerData.customerTypes.Length); // More Teens
+            typeIndex = Random.value < 0.7f ? 1 : Random.Range(0, customerData.customerTypes.Length); // Больше подростков
         else if (timeManager.IsFamilyDay())
-            typeIndex = Random.Range(0, customerData.customerTypes.Length); // Mixed
+            typeIndex = Random.Range(0, customerData.customerTypes.Length); // Смешанный состав
 
-        // Get customer prefab from CustomerData
+        // Получение префаба клиента
         GameObject customerPrefab = customerData.customerTypes[typeIndex].prefab;
         if (customerPrefab == null)
         {
-            Debug.LogWarning($"Prefab for customer type {customerData.customerTypes[typeIndex].name} is not assigned!");
+            Debug.LogWarning($"Префаб для типа клиента {customerData.customerTypes[typeIndex].name} не назначен!");
             return;
         }
 
-        // Spawn customer at entrance
-        GameObject customerObj = Instantiate(customerPrefab, entranceTransform.position, Quaternion.identity, customerParent);
-        Customer customer = customerObj.GetComponent<Customer>();
-        customer.Initialize(availableRegister.transform, typeIndex); // Pass typeIndex
-        customer.SetExitDestination(exitTransform);
-        availableRegister.AssignCustomer(customer);
+        // Проверка наличия необходимых компонентов в префабе
+        if (!customerPrefab.GetComponent<Customer>() || !customerPrefab.GetComponent<NavMeshAgent>() || !customerPrefab.GetComponent<CapsuleCollider>())
+        {
+            Debug.LogError($"Префаб {customerPrefab.name} не имеет всех необходимых компонентов (Customer, NavMeshAgent, CapsuleCollider)!");
+            return;
+        }
 
-        // Check for restricted item purchase
+        // Поиск ближайшей точки на NavMesh для спавна
+        NavMeshHit navHit;
+        Vector3 spawnPosition = entranceTransform.position;
+        if (NavMesh.SamplePosition(entranceTransform.position, out navHit, 5f, NavMesh.AllAreas))
+        {
+            spawnPosition = navHit.position; // Используем ближайшую точку на NavMesh
+        }
+        else
+        {
+            Debug.LogWarning($"Не удалось найти точку на NavMesh для спавна клиента около {entranceTransform.position}!");
+            return; // Пропускаем спавн
+        }
+
+        // Спавн клиента
+        GameObject customerObj = Instantiate(customerPrefab, spawnPosition, Quaternion.identity, customerParent);
+        Customer customer = customerObj.GetComponent<Customer>();
+        customer.Initialize(availableRegister.transform, typeIndex); // Инициализация клиента
+        customer.SetExitDestination(exitTransform); // Установка точки выхода
+        availableRegister.AssignCustomer(customer); // Назначение клиента кассе
+
+        // Проверка покупки запрещенных товаров
         customer.TryBuyRestrictedItem(timeManager, economyManager);
     }
 }

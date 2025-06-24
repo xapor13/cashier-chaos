@@ -2,122 +2,180 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(NavMeshAgent))]
+// Компонент, управляющий поведением клиента в магазине
+[RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider))] // Требуется CapsuleCollider
 public class Customer : MonoBehaviour
 {
-    [SerializeField] private CustomerData customerData;
-    private int customerTypeIndex; // Set via Initialize, not in Inspector
+    [SerializeField] private CustomerData customerData; // Данные о типах клиентов (ScriptableObject)
+    private int customerTypeIndex; // Индекс типа клиента (устанавливается через Initialize)
 
-    public UnityEvent onCustomerNeedsHelp = new UnityEvent();
-    public UnityEvent onCustomerServed = new UnityEvent();
-    public UnityEvent onCustomerLeft = new UnityEvent();
+    // События для уведомления о действиях клиента
+    public UnityEvent onCustomerNeedsHelp = new UnityEvent(); // Клиент нуждается в помощи
+    public UnityEvent onCustomerServed = new UnityEvent(); // Клиент обслужен
+    public UnityEvent onCustomerLeft = new UnityEvent(); // Клиент покинул магазин
 
-    private NavMeshAgent agent;
-    private float remainingPatience;
-    private float scanTimeRemaining;
-    private bool needsHelp;
-    private bool isServed;
-    private int itemCount = 1; // Placeholder: Randomize later
-    private Transform targetDestination; // Cash register or exit
+    private NavMeshAgent agent; // Компонент для навигации по NavMesh
+    private CapsuleCollider capsuleCollider; // Коллайдер клиента
+    private float remainingPatience; // Оставшееся время терпения клиента
+    private float scanTimeRemaining; // Оставшееся время сканирования товаров
+    private bool needsHelp; // Требуется ли клиенту помощь
+    private bool isServed; // Обслужен ли клиент
+    private int itemCount = 1; // Количество товаров (временное значение, позже рандомизировать)
+    private Transform targetDestination; // Цель движения (касса или выход)
 
-    public string CustomerType => customerData.customerTypes[customerTypeIndex].name;
-    public bool NeedsHelp => needsHelp;
-    public bool IsServed => isServed;
+    // Свойства для доступа к состоянию клиента
+    public string CustomerType => customerData.customerTypes[customerTypeIndex].name; // Тип клиента
+    public bool NeedsHelp => needsHelp; // Нуждается ли клиент в помощи
+    public bool IsServed => isServed; // Обслужен ли клиент
 
+    // Инициализация компонентов при создании объекта
     private void Awake()
     {
-        agent = GetComponent<NavMeshAgent>();
+        agent = GetComponent<NavMeshAgent>(); // Получение NavMeshAgent
+        capsuleCollider = GetComponent<CapsuleCollider>(); // Получение CapsuleCollider
+
+        // Проверка наличия коллайдера
+        if (capsuleCollider == null)
+        {
+            Debug.LogError($"Клиент {gameObject.name} не имеет CapsuleCollider! Добавьте компонент.");
+        }
     }
 
+    // Инициализация клиента с указанием кассы и типа
     public void Initialize(Transform cashRegisterTransform, int typeIndex)
     {
-        customerTypeIndex = typeIndex;
-        var typeData = customerData.customerTypes[customerTypeIndex];
-        agent.speed = typeData.moveSpeed;
-        remainingPatience = typeData.patienceTime;
-        scanTimeRemaining = typeData.scanTimePerItem * itemCount;
-        needsHelp = typeData.requiresHelpFrequently && Random.value < 0.5f; // 50% chance for Elderly
-        isServed = false;
-        targetDestination = cashRegisterTransform;
+        customerTypeIndex = typeIndex; // Установка индекса типа клиента
+        var typeData = customerData.customerTypes[customerTypeIndex]; // Данные о типе клиента
+        agent.speed = typeData.moveSpeed; // Установка скорости движения
+        remainingPatience = typeData.patienceTime; // Установка времени терпения
+        scanTimeRemaining = typeData.scanTimePerItem * itemCount; // Время сканирования товаров
+        needsHelp = typeData.requiresHelpFrequently && Random.value < 0.5f; // 50% шанс для Пожилых
+        isServed = false; // Клиент еще не обслужен
+        targetDestination = cashRegisterTransform; // Установка цели (касса)
 
-        // Move to cash register
-        agent.SetDestination(targetDestination.position);
+        // Проверка и активация NavMeshAgent
+        if (!agent.isActiveAndEnabled)
+        {
+            agent.enabled = true; // Включение агента
+        }
 
+        // Настройка коллайдера
+        if (capsuleCollider != null)
+        {
+            capsuleCollider.radius = agent.radius; // Синхронизация с NavMeshAgent
+            capsuleCollider.height = agent.height; // Синхронизация с NavMeshAgent
+            capsuleCollider.center = new Vector3(0, agent.height / 2, 0); // Центрирование
+            capsuleCollider.isTrigger = false; // Физический коллайдер для избегания
+        }
+
+        // Размещение агента на NavMesh
+        NavMeshHit navHit;
+        if (NavMesh.SamplePosition(transform.position, out navHit, 5f, NavMesh.AllAreas))
+        {
+            agent.Warp(navHit.position); // Телепортация на ближайшую точку NavMesh
+        }
+        else
+        {
+            Debug.LogWarning($"Не удалось разместить клиента {CustomerType} на NavMesh в точке {transform.position}!");
+            return;
+        }
+
+        // Установка движения к кассе
+        if (agent.isOnNavMesh)
+        {
+            agent.SetDestination(targetDestination.position); // Установка цели движения
+        }
+        else
+        {
+            Debug.LogWarning($"Клиент {CustomerType} не находится на NavMesh после Warp в точке {transform.position}!");
+        }
+
+        // Уведомление о необходимости помощи
         if (needsHelp)
             onCustomerNeedsHelp.Invoke();
     }
 
+    // Обновление состояния клиента каждый кадр
     private void Update()
     {
-        if (isServed || needsHelp) return;
+        if (isServed || needsHelp) return; // Пропуск, если клиент обслужен или ждет помощи
 
-        // Start scanning only when at cash register
-        if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending)
+        // Начало сканирования товаров, если клиент достиг кассы
+        if (agent.isActiveAndEnabled && agent.isOnNavMesh && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
-            remainingPatience -= Time.deltaTime;
-            scanTimeRemaining -= Time.deltaTime;
+            remainingPatience -= Time.deltaTime; // Уменьшение терпения
+            scanTimeRemaining -= Time.deltaTime; // Уменьшение времени сканирования
 
-            if (scanTimeRemaining <= 0)
+            if (scanTimeRemaining <= 0) // Завершение сканирования
             {
                 isServed = true;
-                onCustomerServed.Invoke();
-                MoveToExit();
+                onCustomerServed.Invoke(); // Уведомление об обслуживании
+                MoveToExit(); // Перемещение к выходу
             }
-            else if (remainingPatience <= 0)
+            else if (remainingPatience <= 0) // Терпение закончилось
             {
-                onCustomerLeft.Invoke();
-                MoveToExit();
+                onCustomerLeft.Invoke(); // Уведомление об уходе
+                MoveToExit(); // Перемещение к выходу
             }
         }
     }
 
+    // Оказание помощи клиенту
     public void ProvideHelp()
     {
         if (needsHelp)
         {
-            needsHelp = false;
-            scanTimeRemaining -= 2f; // Help takes 2-3 seconds
+            needsHelp = false; // Сброс флага помощи
+            scanTimeRemaining -= 2f; // Ускорение сканирования на 2 секунды
         }
     }
 
+    // Изгнание клиента с возможным штрафом
     public void KickCustomer(EconomyManager economyManager)
     {
-        var typeData = customerData.customerTypes[customerTypeIndex];
-        if (Random.value < typeData.kickFineProbability)
+        var typeData = customerData.customerTypes[customerTypeIndex]; // Данные о типе клиента
+        if (Random.value < typeData.kickFineProbability) // Проверка вероятности штрафа
         {
-            economyManager.ApplyFine(typeData.kickFine);
+            economyManager.ApplyFine(typeData.kickFine); // Начисление штрафа
         }
-        onCustomerLeft.Invoke();
-        MoveToExit();
+        onCustomerLeft.Invoke(); // Уведомление об уходе
+        MoveToExit(); // Перемещение к выходу
     }
 
+    // Попытка покупки запрещенных товаров
     public bool TryBuyRestrictedItem(GameTimeManager timeManager, EconomyManager economyManager)
     {
-        var typeData = customerData.customerTypes[customerTypeIndex];
-        if (!typeData.triesRestrictedItems) return false;
+        var typeData = customerData.customerTypes[customerTypeIndex]; // Данные о типе клиента
+        if (!typeData.triesRestrictedItems) return false; // Пропуск, если клиент не покупает запрещенные товары
 
-        if (customerTypeIndex == 1 && Random.value < 0.5f) // Teen trying alcohol/tobacco
+        if (customerTypeIndex == 1 && Random.value < 0.5f) // Подросток с 50% шансом
         {
-            if (timeManager.IsAlcoholRestricted || timeManager.IsNoTobaccoDay())
+            if (timeManager.IsAlcoholRestricted || timeManager.IsNoTobaccoDay()) // Проверка ограничений
             {
-                economyManager.ApplyFine(customerData.customerTypes[customerTypeIndex].kickFine);
-                return true;
+                economyManager.ApplyFine(customerData.customerTypes[customerTypeIndex].kickFine); // Штраф
+                return true; // Попытка зафиксирована
             }
         }
-        return false;
+        return false; // Нет нарушения
     }
 
+    // Перемещение клиента к выходу
     private void MoveToExit()
     {
-        // Set destination to exit (set via CustomerManager)
-        if (targetDestination != null)
+        // Установка цели движения к выходу
+        if (targetDestination != null && agent.isActiveAndEnabled && agent.isOnNavMesh)
         {
-            agent.SetDestination(targetDestination.position);
+            agent.SetDestination(targetDestination.position); // Установка цели
+        }
+        else
+        {
+            Debug.LogWarning($"Невозможно переместить клиента {CustomerType} к выходу: агент не на NavMesh или отключен!");
         }
     }
 
+    // Установка цели выхода
     public void SetExitDestination(Transform exitTransform)
     {
-        targetDestination = exitTransform;
+        targetDestination = exitTransform; // Сохранение трансформа выхода
     }
 }

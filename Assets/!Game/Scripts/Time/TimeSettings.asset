@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c644c1b9c6a6044f93bd36660a4bc1d, type: 3}
   m_Name: TimeSettings
   m_EditorClassIdentifier: 
-  realSecondsPerGameHour: 75
+  realSecondsPerGameHour: 10
   startHour: 8
   endHour: 23
   firstPeakHours: {x: 12, y: 14}
