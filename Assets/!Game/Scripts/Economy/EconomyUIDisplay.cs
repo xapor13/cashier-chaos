@@ -113,10 +113,4 @@ public class EconomyUIDisplay : MonoBehaviour
         customer.ProvideHelp();
         ShowNotification($"Помощь оказана клиенту ({customer.CustomerType})!");
     }
-
-    public void KickCustomer(Customer customer)
-    {
-        customer.KickCustomer(economyManager);
-        ShowNotification($"Клиент ({customer.CustomerType}) изгнан!");
-    }
 }

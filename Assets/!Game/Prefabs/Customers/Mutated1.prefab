@@ -84,6 +84,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 994696752513498276}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 27c70984b9f4990489d83faa91f41371,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8465733542466008350}
   m_SourcePrefab: {fileID: 100100000, guid: 27c70984b9f4990489d83faa91f41371, type: 3}
 --- !u!1 &7510028101898534597 stripped
 GameObject:
@@ -158,3 +162,20 @@ CapsuleCollider:
   m_Height: 1.999015
   m_Direction: 1
   m_Center: {x: 0, y: 0.9990155, z: 0}
+--- !u!114 &-8465733542466008350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7510028101898534597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5ef84aa85d89d3479308eb623154db7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customerData: {fileID: 11400000, guid: d0c6f85bba8a6a64099fa34d46546287, type: 2}
+  customer: {fileID: 4005727789780383089}
+  onCustomerKicked:
+    m_PersistentCalls:
+      m_Calls: []

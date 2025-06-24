@@ -259,6 +259,7 @@ GameObject:
   - component: {fileID: 188861134955643140}
   - component: {fileID: 2751283968081480082}
   - component: {fileID: 6441354074083412590}
+  - component: {fileID: 8352943854849914643}
   m_Layer: 0
   m_Name: Kiki-v2
   m_TagString: Untagged
@@ -396,6 +397,23 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onCustomerLeft:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &8352943854849914643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 542693081547714189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5ef84aa85d89d3479308eb623154db7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customerData: {fileID: 11400000, guid: d0c6f85bba8a6a64099fa34d46546287, type: 2}
+  customer: {fileID: 6441354074083412590}
+  onCustomerKicked:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &936655821827763384

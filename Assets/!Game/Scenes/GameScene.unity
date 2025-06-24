@@ -1837,13 +1837,14 @@ MonoBehaviour:
   cashRegister: {fileID: 1703333123}
   economyManager: {fileID: 1247934770}
   economyUIDisplay: {fileID: 1247934771}
+  inputHandler: {fileID: 0}
   statusText: {fileID: 539891408}
   helpButton: {fileID: 0}
-  kickButton: {fileID: 0}
   repairButton: {fileID: 0}
   rebootButton: {fileID: 0}
   kickRegisterButton: {fileID: 0}
   toggleOffButton: {fileID: 0}
+  selectButton: {fileID: 0}
 --- !u!114 &946095448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2025,6 +2026,8 @@ Transform:
   - {fileID: 1247934769}
   - {fileID: 159247366}
   - {fileID: 946095446}
+  - {fileID: 1883312854}
+  - {fileID: 1729324916}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1027380374
@@ -3560,6 +3563,53 @@ MonoBehaviour:
   onStateChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1729324915
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1729324916}
+  - component: {fileID: 1729324918}
+  m_Layer: 0
+  m_Name: InputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1729324916
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729324915}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1016903377}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1729324918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729324915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ddb0e9b51b6fd6419669c4be13a7e75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cashRegisterManager: {fileID: 946095448}
+  economyManager: {fileID: 1247934770}
+  economyUIDisplay: {fileID: 1247934771}
 --- !u!1 &1743403540
 GameObject:
   m_ObjectHideFlags: 0
@@ -3799,6 +3849,55 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 317437067}
   m_SourcePrefab: {fileID: 100100000, guid: 925619d3d033c4377b938a880918bbb7, type: 3}
+--- !u!1 &1883312853
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1883312854}
+  - component: {fileID: 1883312855}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1883312854
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883312853}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1016903377}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1883312855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883312853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afa88599b33d25a4eba4f89e4adf9163, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bgmSource: {fileID: 0}
+  sfxSources: []
+  soundClips: []
+  bgmVolume: 0.5
+  sfxVolume: 0.8
 --- !u!1 &1923300609
 GameObject:
   m_ObjectHideFlags: 0
